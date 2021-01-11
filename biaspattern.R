@@ -160,9 +160,9 @@ confbiasL <- brm(confbias ~ orthopoly_L + (1|subjects),
                  save_all_pars = "TRUE", 
                  family = gaussian(link = "identity"),
                  prior = bias_priors, 
-                 warmup = 1000,
+                 warmup = 4000,
                  chains = 4,
-                 iter = 10000,
+                 iter = 40000,
                  control = list(adapt_delta = 0.98, max_treedepth = 15))
 
 confbiasQ <- brm(confbias ~ orthopoly_L + orthopoly_Q + (1|subjects), 
@@ -170,15 +170,15 @@ confbiasQ <- brm(confbias ~ orthopoly_L + orthopoly_Q + (1|subjects),
                  save_all_pars = "TRUE", 
                  family = gaussian(link = "identity"),
                  prior = bias_priors, 
-                 warmup = 1000,
+                 warmup = 4000,
                  chains = 4,
-                 iter = 10000,
+                 iter = 40000,
                  control = list(adapt_delta = 0.98, max_treedepth = 15))
 
-confbnullM <- update(confbiasM, formula = ~. -orientation)
+confbnullM <- update(confbiasL, formula = ~. -orthopoly_L)
 
-BF_oribias <- bayes_factor(confbiasL, confbiasQ)
-BF_oribias
+conf_comparision <- bayesfactor_models(confbiasL, confbiasQ, denominator = confbnullM)
+bayesfactor_inclusion(conf_comparision, match_models = TRUE)
 
 
 
